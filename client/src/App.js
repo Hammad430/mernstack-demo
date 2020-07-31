@@ -95,7 +95,7 @@ class App extends React.Component{
     //JSX
     return(
       <div className="app">
-        <h2>Welcome to my App</h2>
+        <h2>Welcome to my First MERN stack App</h2>
         <form onSubmit={this.submit}>
           <div className="form-input">
             <input 
