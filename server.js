@@ -11,11 +11,11 @@ const PORT = process.env.PORT || 8080;  //step1 heroku deployment
 const routes = require('./routes/api');
 
 // MongoDB atlas URI & tahir123 <- MongoDB atlas password
-const MONGODB_ATLAS_URI = 'mongodb+srv://hammadtahir:tahir123@hammadcluster-rkcs7.mongodb.net/<dbname>?retryWrites=true&w=majority'
+//const MONGODB_URI = 'mongodb+srv://hammadtahir:tahir123@hammadcluster-rkcs7.mongodb.net/<dbname>?retryWrites=true&w=majority'
 
 //step 2 heroku deployment --> comment mongodb uri  and add  process.env in mongoose.connect
 //Connect to mongo db using given URI or locally
-mongoose.connect(process.env.MONGODB_URI || MONGODB_ATLAS_URI || 'mongodb://localhost:27017/mern_youtubee',{
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mern_youtubee',{
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
