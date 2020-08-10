@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 //Schema
 const Schema = mongoose.Schema;
 const BlogPostSchema =  new Schema({
-    title: String,
-    body: String,
+    region: String,
+    rate: Number,
     date:{
-        type: String,
+        type: Date,
         default: Date.now()
     }
 });

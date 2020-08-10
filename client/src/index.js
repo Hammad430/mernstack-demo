@@ -1,13 +1,26 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import App from './App';
+import NavBar from './NavBar';
+import Carousel from './Carousel';
+import addRate from './addRate';
+import showRate from './showRate';
 import * as serviceWorker from './serviceWorker';
 
+
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router>
+      <div>
+        <Route path="/" component={NavBar} />
+        <Route exact path="/" component={Carousel} />
+        <Route exact path="/sell" component={App} />
+        <Route exact path="/addRate" component={addRate} />
+        <Route exact path="/showRate" component={showRate} />
+      </div>
+  </Router>,
   document.getElementById('root')
 );
 
