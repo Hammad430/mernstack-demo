@@ -1,133 +1,124 @@
 import  axios from 'axios';
 import React from 'react';
-import { Alert, Card, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './styles.css';
-import { get } from 'mongoose';
+import { Table } from 'reactstrap';
 
 class showRate extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            finalArr: [],
             ratesData: [],
             regions: [],
-            today: [],
-            lastDay: []
         };
     }
 
-    componentDidMount =() => {
-        this.getRegions();
+    componentDidMount =async() => {
+
+      let today = new Date();
+      let lastDay = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date);
+      let lastWeek = ( d => new Date(d.setDate(d.getDate()-7)) )(new Date);
+      let lastMonth = ( d => new Date(d.setDate(d.getDate()-30)) )(new Date);
+
+      await this.getRegions();
+      await this.getRates(today,'today');
+      await this.getRates(lastDay,'lastDay');
+      await this.getRates(lastWeek,'lastWeek');
+      await this.getRates(lastMonth,'lastMonth');
       };
+      
+    getRegions = async () => {
+      const response = await axios.get('/api/regions')
+      const data = await response.data
+      this.setState({regions: data})
+      var rateArr = []
+      for (let i=0;i<this.state.regions.length;i++)
+      {
+        rateArr.push({region: this.state.regions[i]})
+      }
+      this.setState({finalArr: rateArr})
+      console.log(this.state.finalArr);
+    };
    
-    getRegions = () => {
-      axios.get('/api/regions')
-        .then((response) =>{
-          const data = response.data;
-          this.setState({regions: data});
-          let today = new Date();
-          let last2Day = ( d => new Date(d.setDate(d.getDate()-2)) )(new Date);
-          this.getRates(today);
-          console.log('Regions have been received!');
-        })
-        .catch(() =>{
-          alert('Error receiving data!');
-        });
+    getRates = async (date, type) => {
+      const response = await axios.get('/api/'+ date)
+      const data = await response.data
+      this.setState({ratesData: data})
+      this.populateRates(type);
     };
-
-    getRates = (date) => {
-      axios.get('/api/'+ date)
-        .then((response) =>{
-          const data = response.data;
-          this.setState({ratesData: data});
-          console.log(this.state.ratesData);
-          this.populateRates('today');
-          console.log('Rates have been received!');
-        })
-        .catch(() =>{
-          alert('Error receiving data!');
-        });
-    };
-
-    populateRates = (value) => {
-        const rateArr = []
-        for (let i=0;i<this.state.regions.length;i++)
-        {
-            var flag =0;
-            var rate =0;
-            for(let j=0;j<this.state.ratesData.length;j++){
-                if(this.state.regions[i]===this.state.ratesData[j]._id)
-                {
-                    flag=1;
-                    rate=this.state.ratesData[j].rate;
-                }
-            }
-
-            if(flag===1)
-            {
-              rateArr.push(rate);
-            }
-            else
-            {
-              rateArr.push(0);
-            }
-        }
-        console.log(rateArr)
-        if(rateArr.length !== 0)
-        {
-          this.setState({[value]: rateArr});
-        }
-        else
-          console.log('condition not met')
-      };
-
-    displayRates = (ratesData) => {
-        if(!ratesData.length) return null;
     
-        //loop over each post to display all posts
-        //.map is used for looping
-        //index and key is used  to identify  individual post in loop
-        return ratesData.map((singleRateData,  index) => (
-        <Row key={index}>{singleRateData}</Row>
-          // <div key={index} className="blog-post_display">
-          //   <h3>{singleRateData._id}</h3>
-          //   <p>{singleRateData.rate}</p>
-          // </div>
+    populateRates = async (value) => {
+      const rateArr = this.state.finalArr
+      for (let i=0;i<this.state.regions.length;i++)
+      {
+        var flag =0;
+        var rate =0;
+        for(let j=0;j<this.state.ratesData.length;j++)
+        {
+            if(this.state.regions[i]===this.state.ratesData[j]._id)
+            {
+              flag=1;
+              rate=this.state.ratesData[j].rate;
+            }    
+        }
+        if(flag===1)
+        {
+          if(value==='today')
+            rateArr[i].today = rate;
+          else if  (value==='lastDay')
+            rateArr[i].lastDay = rate;
+          else if  (value==='lastWeek')
+            rateArr[i].lastWeek = rate;
+          else if  (value==='lastMonth')
+            rateArr[i].lastMonth = rate;
+        }   
+        else
+        {
+          if(value==='today')
+            rateArr[i].today = 0;
+          else if  (value==='lastDay')
+            rateArr[i].lastDay = 0;
+          else if  (value==='lastWeek')
+            rateArr[i].lastWeek = 0;
+          else if  (value==='lastMonth')
+            rateArr[i].lastMonth = 0;
+        }
+      }
+      console.log(rateArr)
+      this.setState({finalArr: rateArr});
+    };
+
+    displayRates = (dataArr) => {
+        if(!dataArr.length) return null;
+        return dataArr.map((data, index) => (
+        <tr key={index}>
+          <th scope="row" style={{ textAlign: 'left' }}>{data.region}</th>
+          <td>{data.today}</td>
+          <td>{data.lastDay}</td>
+          <td>{data.lastWeek}</td>
+          <td>{data.lastMonth}</td>
+        </tr>
         ));
       };
       
     render(){
         return(
-          <div>
-            <Container>
-              <Row>
-                <Col>
-                <Row>Region</Row>
-                {this.displayRates(this.state.regions)}
-                </Col>
-                <Col>
-                <Row>Today's Rate</Row>
-                {this.displayRates(this.state.today)}
-                </Col>
-                <Col>
-                <Row>Last Day's Rate</Row>
-                {this.displayRates(this.state.today)}
-                </Col>
-              </Row>
-            </Container>
+          <div className="ratesTable">
+            <Table>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th>Today</th>
+                  <th>Yesterday</th>
+                  <th>Last Week</th>
+                  <th>Last Month</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {this.displayRates(this.state.finalArr)}
+              </tbody>
+            </Table>
           </div>
-            // <div>
-            //     <Container>
-            //         <Row>
-            //             <Col>Region</Col>
-            //             <Col>Today's Rate</Col>
-            //             <Col>Last Day's Rate</Col>
-            //         </Row>
-            //     </Container>
-            //     <button onClick={this.populateRates}>Login</button>
-            // </div>
-        //     <div className="rates-table">
-        //     {this.displayRates(this.state.ratesData)}
-        //   </div>
         );
     }
 }

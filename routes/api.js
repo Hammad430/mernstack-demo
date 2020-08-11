@@ -24,6 +24,7 @@ router.get('/regions', (req, res, next) => {
 
 router.get('/:date', (req, res) => {
     var date = req.params.date;
+    console.log(date);
     BlogPost.aggregate(
         [
           { $match: { date: {

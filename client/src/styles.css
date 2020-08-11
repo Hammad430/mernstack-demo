@@ -76,3 +76,11 @@ Form{
   text-align: center;
   font-size: large;
 }
+
+.ratesTable {
+  padding: 2em;
+}
+
+Table {
+  text-align: center;
+}
