@@ -8,6 +8,8 @@ import Carousel from './Carousel';
 import addRate from './addRate';
 import showRate from './showRate';
 import * as serviceWorker from './serviceWorker';
+import LogRocket from 'logrocket';
+LogRocket.init('xtdmy1/poultryapp');
 
 
 

@@ -14,7 +14,8 @@ class showRate extends React.Component{
             regions: [],
             width: window.innerWidth,
             activeTab: '1',
-            flag: 0
+            flag: 0,
+            dataRecieved: 0
         };
     }
 
@@ -34,40 +35,50 @@ class showRate extends React.Component{
       this.setState({ width: window.innerWidth });
     };
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
 
       let today = new Date();
       let lastDay = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date);
       let lastWeek = ( d => new Date(d.setDate(d.getDate()-7)) )(new Date);
       let lastMonth = ( d => new Date(d.setDate(d.getDate()-30)) )(new Date);
 
-      this.getRegions();
-      this.getRates(today,'today');
-      this.getRates(lastDay,'lastDay');
-      this.getRates(lastWeek,'lastWeek');
-      this.getRates(lastMonth,'lastMonth');
+      await this.getRegions();
+      await this.getRates(today,'today');
+      await this.getRates(lastDay,'lastDay');
+      await this.getRates(lastWeek,'lastWeek');
+      await this.getRates(lastMonth,'lastMonth');
+      this.setState({dataRecieved:1});
       };
       
-    getRegions = async () => {
+    getRegions = async () => { 
       const response = await axios.get('/api/regions')
+      //console.log('getRegions api called')
       const data = await response.data
       this.setState({regions: data})
+      //console.log('getRegions regions setState:' + this.state.regions)
       const rateArr = []
       for (let i=0;i<this.state.regions.length;i++)
       {
         rateArr.push({region: this.state.regions[i]})
       }
       this.setState({finalArr: rateArr})
+      //console.log('getRegions finalArr setState:' + this.state.finalArr[0].region)
     };
    
     getRates = async (date, type) => {
       const response = await axios.get('/api/'+ date)
+      //console.log('getRates api called')
       const data = await response.data
       this.setState({ratesData: data})
+      // this.state.ratesData.forEach(element => {
+      //   console.log(element)
+      // });
       this.populateRates(type);
     };
     
     populateRates = (value) => {
+      // console.log('populate function called')
+      // console.log(this.state.finalArr.length)
       const rateArr = this.state.finalArr
       for (let i=0;i<this.state.regions.length;i++)
       {
@@ -105,6 +116,9 @@ class showRate extends React.Component{
         }
       }
       this.setState({finalArr: rateArr});
+      // this.state.finalArr.forEach(element => {
+      //   console.log(element)
+      // });
     };
 
     displayRates = (dataArr) => {
@@ -163,122 +177,128 @@ class showRate extends React.Component{
     render(){
       const { width } = this.state;
       const isMobile = width <= 500;
-          
-      if (isMobile) {
-        return (
-        <div>
-      <Nav tabs>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: this.state.activeTab === '1' })}
-            onClick={() => { this.toggle('1'); }}
-          >
-            Today
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: this.state.activeTab === '2' })}
-            onClick={() => { this.toggle('2'); }}
-          >
-            Yesterday
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: this.state.activeTab === '3' })}
-            onClick={() => { this.toggle('3'); }}
-          >
-            Last Week
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: this.state.activeTab === '4' })}
-            onClick={() => { this.toggle('4'); }}
-          >
-            Last Month
-          </NavLink>
-        </NavItem>
-      </Nav>
-      <TabContent activeTab={this.state.activeTab}>
-        <TabPane tabId="1">
+      if(this.state.dataRecieved==1)
+      {     
+        if (isMobile) {
+          return (
+          <div>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '1' })}
+              onClick={() => { this.toggle('1'); }}
+            >
+              Today
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('2'); }}
+            >
+              Yesterday
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '3' })}
+              onClick={() => { this.toggle('3'); }}
+            >
+              Last Week
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '4' })}
+              onClick={() => { this.toggle('4'); }}
+            >
+              Last Month
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+            <Table>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th>Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {this.displayRatesMob(this.state.finalArr,1)}
+              </tbody>
+            </Table>
+          </TabPane>
+          <TabPane tabId="2">
           <Table>
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>Region</th>
-                <th>Rate</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {this.displayRatesMob(this.state.finalArr,1)}
-            </tbody>
-          </Table>
-        </TabPane>
-        <TabPane tabId="2">
-        <Table>
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>Region</th>
-                <th>Rate</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {this.displayRatesMob(this.state.finalArr,2)}
-            </tbody>
-          </Table>
-        </TabPane>
-        <TabPane tabId="3">
-        <Table>
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>Region</th>
-                <th>Rate</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {this.displayRatesMob(this.state.finalArr,3)}
-            </tbody>
-          </Table>
-        </TabPane>
-        <TabPane tabId="4">
-        <Table>
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>Region</th>
-                <th>Rate</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {this.displayRatesMob(this.state.finalArr,4)}
-            </tbody>
-          </Table>
-        </TabPane>
-      </TabContent>
-    </div>
-      );
-      } else {
-        return (
-          <div className="ratesTable">
-             <Table>
-               <thead>
-                 <tr>
-                   <th style={{ textAlign: 'left' }}>Region</th>
-                   <th>Today</th>
-                   <th>Yesterday</th>
-                   <th>Last Week</th>
-                   <th>Last Month</th>
-                 </tr>
-               </thead>
-               <tbody>
-                     {this.displayRates(this.state.finalArr)}
-               </tbody>
-             </Table>
-           </div>
-        
-      );
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th>Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {this.displayRatesMob(this.state.finalArr,2)}
+              </tbody>
+            </Table>
+          </TabPane>
+          <TabPane tabId="3">
+          <Table>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th>Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {this.displayRatesMob(this.state.finalArr,3)}
+              </tbody>
+            </Table>
+          </TabPane>
+          <TabPane tabId="4">
+          <Table>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th>Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {this.displayRatesMob(this.state.finalArr,4)}
+              </tbody>
+            </Table>
+          </TabPane>
+        </TabContent>
+      </div>
+        );
+        } else {
+          return (
+            <div className="ratesTable">
+               <Table>
+                 <thead>
+                   <tr>
+                     <th style={{ textAlign: 'left' }}>Region</th>
+                     <th>Today</th>
+                     <th>Yesterday</th>
+                     <th>Last Week</th>
+                     <th>Last Month</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                       {this.displayRates(this.state.finalArr)}
+                 </tbody>
+               </Table>
+             </div>
+          
+        );
+      }
+      }
+      else
+      {
+        return <span>Loading rates...</span>;
+      }
     }
-}
 }
 
 export default showRate;
