@@ -29,24 +29,6 @@ mongoose.connection.on('connected',  () => {
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
-// //Saving data to our mongo database
-// const data = {
-//     title: 'First MERN tutorial',
-//     body: 'I am learning MERN stack development from a youtube channel'
-// };
-
-// //new instance of the model
-// const newBlogPost = new BlogPost(data);
-
-// //.save();
-// newBlogPost.save((error) => {
-//     if(error){
-//         console.log('Ooops, something happened');
-//     } else{
-//         console.log('Data has been saved!!');
-//     }
-// });
-
 //HTTP request logger
 app.use(morgan('tiny'));
 
