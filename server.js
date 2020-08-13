@@ -39,6 +39,10 @@ app.use('/api',routes);
 // go into client folder and type npm run build 
 if(process.env.NODE_ENV ==='production'){
     app.use(express.static('client/build'));
+
+    app.get('*', function(req, res) {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+      });
 }
 
 app.listen(PORT, console.log(`Server is starting at ${PORT}`));
