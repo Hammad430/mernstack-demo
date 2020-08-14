@@ -5,22 +5,22 @@ const items = [
   {
     src: require('./images/img2.jpg'),
     altText: 'Slide 1',
-    caption: 'Slide 1',
-    header: 'Slide 1 Header',
+    caption: 'Check Rates',
+    header: 'See daily and previous rates for all regions',
     key: '1'
   },
   {
     src: require('./images/img3.jpg'),
     altText: 'Slide 2',
-    caption: 'Slide 2',
-    header: 'Slide 2 Header',
+    caption: 'Sell Flock',
+    header: 'List your Flock to sell',
     key: '2'
   },
   {
     src: require('./images/img1.jpg'),
     altText: 'Slide 3',
-    caption: 'Slide 3',
-    header: 'Slide 3 Header',
+    caption: 'Buy Flock',
+    header: 'See information  for  ready flocks',
     key: '3'
   }
 ];
