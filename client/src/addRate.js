@@ -17,18 +17,19 @@ class addRate extends React.Component{
 
     handleSubmit(e) {
 
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = today.getFullYear();
+      // var today = new Date();
+      // var dd = String(today.getDate()).padStart(2, '0');
+      // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      // var yyyy = today.getFullYear();
 
-      today = dd + '/' + mm + '/' + yyyy;
-      console.log(today);
+      // today = dd + '/' + mm + '/' + yyyy;
+      // console.log(today);
 
         e.preventDefault();
         const payload = {
             region: this.region.value,
             rate: this.rate.value,
+            tag: 'rate'
           };
         console.log(payload);
         axios({
@@ -51,15 +52,7 @@ class addRate extends React.Component{
             .catch(() => {
               console.log('Internal server error!');
             });;
-        };
-
-        resetUserInputs = () => {
-            this.setState({
-              title:'',
-              body:''
-            });
-          };
-      
+        };      
 
     render(){
         var regionList = this.state.regions;

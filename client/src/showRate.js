@@ -106,13 +106,13 @@ class showRate extends React.Component{
         else
         {
           if(value==='today')
-            rateArr[i].today = 0;
+            rateArr[i].today = '-';
           else if  (value==='lastDay')
-            rateArr[i].lastDay = 0;
+            rateArr[i].lastDay = '-';
           else if  (value==='lastWeek')
-            rateArr[i].lastWeek = 0;
+            rateArr[i].lastWeek = '-';
           else if  (value==='lastMonth')
-            rateArr[i].lastMonth = 0;
+            rateArr[i].lastMonth = '-';
         }
       }
       this.setState({finalArr: rateArr});
@@ -177,7 +177,7 @@ class showRate extends React.Component{
     render(){
       const { width } = this.state;
       const isMobile = width <= 500;
-      if(this.state.dataRecieved==1)
+      if(this.state.dataRecieved===1)
       {     
         if (isMobile) {
           return (

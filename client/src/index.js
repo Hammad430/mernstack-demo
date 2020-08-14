@@ -7,6 +7,8 @@ import NavBar from './NavBar';
 import Carousel from './Carousel';
 import addRate from './addRate';
 import showRate from './showRate';
+import sell from './sell';
+import buy from './buy';
 import * as serviceWorker from './serviceWorker';
 import LogRocket from 'logrocket';
 LogRocket.init('xtdmy1/poultryapp');
@@ -18,7 +20,8 @@ ReactDOM.render(
       <div>
         <Route path="/" component={NavBar} />
         <Route exact path="/" component={Carousel} />
-        <Route exact path="/sell" component={App} />
+        <Route exact path="/sell" component={sell} />
+        <Route exact path="/buy" component={buy} />
         <Route exact path="/addRate" component={addRate} />
         <Route exact path="/showRate" component={showRate} />
       </div>

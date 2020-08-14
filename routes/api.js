@@ -22,15 +22,26 @@ router.get('/regions', (req, res, next) => {
     });
   });
 
+  router.get('/listings', (req, res, next) => {
+    BlogPost.find({tag: 'sell'})
+    .then((data) => {
+        console.log('Data:', data);
+        res.json(data);
+    })
+    .catch((error) =>{
+        console.log('error:', error);
+    });
+  });
+
 router.get('/:date', (req, res) => {
     var date = req.params.date;
     console.log(date);
     BlogPost.aggregate(
         [
-          { $match: { date: {
+          { $match: { $and:[{date: {
             $gte: new Date(new Date(date).setHours(00, 00, 00)),
             $lt: new Date(new Date(date).setHours(23, 59, 59))
-             } } }, 
+             }},{tag: 'rate'}]}}, 
           {
             $group:
               {
@@ -65,6 +76,25 @@ router.post('/save', (req, res) => {
         });
     });  
 });
+
+router.post('/saveSelling', (req, res) => {
+    console.log('Selling request body:', req.body);
+    const data = req.body;
+    //create a new blogpost for incoming data
+    const newBlogPost = new BlogPost(data);
+
+    //.save
+    newBlogPost.save((error) => {
+        if(error){
+            res.status(500).json({msg: 'Sorry, internal server errors'});
+            return;
+        }
+        return res.json({
+            msg: 'New rate has been saved!!'
+        });
+    });  
+});
+
 
 // router.get('/name', (req, res) => {
 //     const data = {

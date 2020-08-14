@@ -1,55 +1,3 @@
-.app {
-  padding: 10px;
-}
-
-form {
-  width: 50%;
-}
-
-.form-input {
-  margin: 10px 0px;
-}
-
-input {
-  border: none;
-  outline: none;
-}
-
-.form-input{
-  width:100% ;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: .25rem;
-  border: 1px solid lightgray;
-  padding: .375rem .75rem;
-  outline: none;
-}
-
-textarea{
-  border: none;
-  width: 100%;
-  height: 100%;
-  outline: none;
-}
-
-button  {
-  background-color: #007bff;
-  color: #fff;
-  padding: .375rem .75rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: .25rem;
-  cursor: pointer;
-
-}
-
-.blog-post_display {
-  border: 1px solid lightgrey;
-  margin: 5px 0px;
-  border-radius: 4px;
-  padding: 10px;
-}
-
 .addRate {
   padding-top: 2em;
   padding-bottom: 2em;
@@ -58,6 +6,11 @@ button  {
 Form{
   width: 100%;
   height: auto;
+}
+
+.sellForm{
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 .alertDiv{
@@ -77,10 +30,37 @@ Form{
   font-size: large;
 }
 
+.sellFormTitle{
+  width: 100%;
+  text-align: center;
+  font-size: large;
+}
+
 .ratesTable {
   padding: 2em;
 }
 
 Table {
   text-align: center;
+}
+
+.rateContainer {
+  width: 30em;
+}
+
+@media screen and (min-width: 500px) {
+  .sellButt {
+    width: 30em;
+    margin: auto;
+  }
+}
+
+.sellJumbotron{
+  padding: 1.5em;
+}
+
+.listingDiv{
+  padding-top: 2em;
+  padding-left: 2em;
+  padding-right: 2em;
 }

@@ -5,6 +5,12 @@ const Schema = mongoose.Schema;
 const BlogPostSchema =  new Schema({
     region: String,
     rate: Number,
+    shedName: String,
+    sellRate: Number,
+    address: String,
+    contact: String,
+    city: String,
+    tag: String,
     date:{
         type: Date,
         default: Date.now()
