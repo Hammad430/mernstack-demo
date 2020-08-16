@@ -43,8 +43,8 @@ const NavBar = (props) => {
                 <DropdownItem href="/addRate">
                   Add Rate
                 </DropdownItem>
-                <DropdownItem>
-                  Option 2
+                <DropdownItem href="/graph">
+                  Graph
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>

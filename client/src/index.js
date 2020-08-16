@@ -9,6 +9,7 @@ import addRate from './addRate';
 import showRate from './showRate';
 import sell from './sell';
 import buy from './buy';
+import graph from './graph';
 import * as serviceWorker from './serviceWorker';
 import LogRocket from 'logrocket';
 LogRocket.init('xtdmy1/poultryapp');
@@ -24,6 +25,7 @@ ReactDOM.render(
         <Route exact path="/buy" component={buy} />
         <Route exact path="/addRate" component={addRate} />
         <Route exact path="/showRate" component={showRate} />
+        <Route exact path="/graph" component={graph} />
       </div>
   </Router>,
   document.getElementById('root')

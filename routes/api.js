@@ -59,6 +59,35 @@ router.get('/:date', (req, res) => {
         });
 });
 
+router.get('/rates/Last30', (req, res) => {
+    var dateStart = new Date();
+    var dateEnd = ( d => new Date(d.setDate(d.getDate()-7)) )(new Date);
+    console.log(dateStart);
+    console.log(dateEnd);
+    BlogPost.aggregate(
+        [
+          { $match: { $and:[{date: {
+            $gte: new Date(new Date(dateEnd).setHours(00, 00, 00)),
+            $lt: new Date(new Date(dateStart).setHours(23, 59, 59))
+             }},{tag: 'rate'}]}
+            },
+          {
+            $group:
+              {
+                _id: "$region",
+                rate: { $push: "$rate" }
+              }
+          }
+        ]
+     ).then((data) => {
+            console.log('Data:', data);
+            res.json(data);
+        })
+        .catch((error) =>{
+            console.log('error:', error);
+        });
+});
+
 router.post('/save', (req, res) => {
     console.log('Save request body:', req.body);
     const data = req.body;
