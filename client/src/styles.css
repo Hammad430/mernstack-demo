@@ -36,8 +36,18 @@ Form{
   font-size: large;
 }
 
+.mobileView{
+  font-size: small;
+}
+
+.browserView{
+  font-size: medium;
+}
+
 .ratesTable {
   padding: 2em;
+  padding-left: 3em;
+  padding-right: 4em;
 }
 
 Table {
@@ -63,4 +73,33 @@ Table {
   padding-top: 2em;
   padding-left: 2em;
   padding-right: 2em;
+}
+
+.graphDiv {
+  height: 50vh;
+  padding: 2em;
+  padding-top: 0;
+}
+
+.graphDiv2 {
+  height: 100vh;
+  padding: 2em;
+}
+.table{
+  margin-bottom: 0;
+}
+
+canvas{
+  width:100% !important;
+  height:100% !important;
+  margin: auto;
+}
+
+.mobileViewGraphDiv{
+  width: 100vw;
+  height: 50vh;
+}
+
+td,th {
+  padding: 6px !important;
 }

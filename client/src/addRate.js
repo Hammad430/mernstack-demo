@@ -15,21 +15,23 @@ class addRate extends React.Component{
         document.getElementById("rateForm").reset();
       }
 
+    createDate = (today,offset) => {
+        today = new Date(today.setDate(today.getDate()+offset));
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        return today = dd + '-' + mm + '-' + yyyy;
+    };
+
     handleSubmit(e) {
-
-      // var today = new Date();
-      // var dd = String(today.getDate()).padStart(2, '0');
-      // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-      // var yyyy = today.getFullYear();
-
-      // today = dd + '/' + mm + '/' + yyyy;
-      // console.log(today);
 
         e.preventDefault();
         const payload = {
             region: this.region.value,
             rate: this.rate.value,
-            tag: 'rate'
+            tag: 'rate',
+            date: this.createDate(new Date(),0),
+            timeStamp: Date.now()
           };
         console.log(payload);
         axios({

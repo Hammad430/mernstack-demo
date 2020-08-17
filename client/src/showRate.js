@@ -4,6 +4,7 @@ import { Table } from 'reactstrap';
 import React from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import classnames from 'classnames';
+import {Line} from 'react-chartjs-2';
 
 class showRate extends React.Component{
     constructor(props){
@@ -15,7 +16,9 @@ class showRate extends React.Component{
             width: window.innerWidth,
             activeTab: '1',
             flag: 0,
-            dataRecieved: 0
+            dataRecieved: 0,
+            labels: [],
+            datasets:[]
         };
     }
 
@@ -35,20 +38,61 @@ class showRate extends React.Component{
       this.setState({ width: window.innerWidth });
     };
 
+    createDate = (today,offset) => {
+      today = new Date(today.setDate(today.getDate()+offset));
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = today.getFullYear();
+      return today = dd + '-' + mm + '-' + yyyy;
+  };
+
     componentDidMount = async () => {
 
-      let today = new Date();
-      let lastDay = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date);
-      let lastWeek = ( d => new Date(d.setDate(d.getDate()-7)) )(new Date);
-      let lastMonth = ( d => new Date(d.setDate(d.getDate()-30)) )(new Date);
+      // let today = new Date();
+      // let lastDay = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date);
+      // let lastWeek = ( d => new Date(d.setDate(d.getDate()-7)) )(new Date);
+      // let lastMonth = ( d => new Date(d.setDate(d.getDate()-30)) )(new Date);
 
       await this.getRegions();
-      await this.getRates(today,'today');
-      await this.getRates(lastDay,'lastDay');
-      await this.getRates(lastWeek,'lastWeek');
-      await this.getRates(lastMonth,'lastMonth');
+      await this.getRates(this.createDate(new Date(),0),'today');
+      await this.getRates(this.createDate(new Date(),-1),'lastDay');
+      await this.getRates(this.createDate(new Date(),-7),'lastWeek');
+      await this.getRates(this.createDate(new Date(),-30),'lastMonth');
+      await this.getGraphData(7);
       this.setState({dataRecieved:1});
       };
+
+    randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+    randomByte = () => this.randomNumber(0, 255)
+    randomPercent = () => (this.randomNumber(50, 100) * 0.01).toFixed(2)
+    randomCssRgba = () => `rgba(${[this.randomByte(), this.randomByte(), this.randomByte(), this.randomPercent()].join(',')})`
+
+    getGraphData = async (days) => {
+      const response = await axios.get('/api/rates/Last'+days)
+      const data = await response.data
+      console.log(data)
+      var datasets = []
+      var labels = []
+      var count = data[0].rate.length-1
+      data[0].rate.forEach(element => {
+          labels.push(this.createDate(new Date(),-count))
+          count-=1
+      });
+      this.setState({labels: labels})
+      data.forEach(element => {
+          var color=this.randomCssRgba()
+          console.log(color)
+        datasets.push({
+            label: element._id,
+            fill: false,
+            lineTension: 0.5,
+            borderColor: color,
+            data: element.rate
+        })
+      }); 
+      console.log(datasets)
+      this.setState({datasets: datasets})
+    };
       
     getRegions = async () => { 
       const response = await axios.get('/api/regions')
@@ -86,7 +130,7 @@ class showRate extends React.Component{
         var rate =0;
         for(let j=0;j<this.state.ratesData.length;j++)
         {
-            if(this.state.regions[i]===this.state.ratesData[j]._id)
+            if(this.state.regions[i]===this.state.ratesData[j].region)
             {
               flag=1;
               rate=this.state.ratesData[j].rate;
@@ -181,6 +225,7 @@ class showRate extends React.Component{
       {     
         if (isMobile) {
           return (
+          <div className="mobileView">
           <div>
         <Nav tabs>
           <NavItem>
@@ -260,7 +305,7 @@ class showRate extends React.Component{
           <Table>
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left' }}>Region</th>
+                  <th style={{ textAlign: 'left'}}>Region</th>
                   <th>Rate</th>
                 </tr>
               </thead>
@@ -271,9 +316,44 @@ class showRate extends React.Component{
           </TabPane>
         </TabContent>
       </div>
+      <div className="mobileViewGraphDiv">
+        <Line
+         data={this.state}
+         options={{
+           responsive: true,
+           maintainAspectRatio: false,
+           title:{
+             display:true,
+             text:'Rates per Region'
+           },
+           legend:{
+             display:true,
+             position:'bottom'
+           },
+           scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                fontSize: 7
+              }
+            }],
+            yAxes:[{
+              ticks:{
+                fontSize: 7
+              }
+            }]
+          }
+         }}
+       />
+     </div>  
+      </div>
+      
         );
         } else {
           return (
+            <div className="browserView">
             <div className="ratesTable">
                <Table>
                  <thead>
@@ -289,6 +369,25 @@ class showRate extends React.Component{
                        {this.displayRates(this.state.finalArr)}
                  </tbody>
                </Table>
+             </div>
+             <div className="graphDiv">
+        <Line
+         data={this.state}
+         options={{
+           maintainAspectRatio: false,
+           responsive:true,
+           title:{
+             display:false,
+             text:'Rates per Region Chart',
+             fontSize:16
+           },
+           legend:{
+             display:true,
+             position:'bottom'
+           }
+         }}
+       />
+     </div>  
              </div>
           
         );
