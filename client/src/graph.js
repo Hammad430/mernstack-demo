@@ -7,11 +7,12 @@ class graph extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            labels: [],
+            datasets:[]
         };
     }
     componentDidMount(){
-        //this.getRates();
-        console.log(this.createDate(new Date(),-1));
+        this.getGraphData(7);
     }
 
     createDate = (today,offset) => {
@@ -19,25 +20,64 @@ class graph extends React.Component{
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
-
-        return today = dd + '/' + mm + '/' + yyyy;
+        return today = dd + '-' + mm + '-' + yyyy;
     };
+
+    // random_rgba = () => {
+    //     var o = Math.round, r = Math.random, s = 255;
+    //     return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    // }
+
+    randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+    randomByte = () => this.randomNumber(0, 255)
+    randomPercent = () => (this.randomNumber(50, 100) * 0.01).toFixed(2)
+    randomCssRgba = () => `rgba(${[this.randomByte(), this.randomByte(), this.randomByte(), this.randomPercent()].join(',')})`
    
-    getRates = async () => {
-      const response = await axios.get('/api/rates/Last30')
-      //console.log('getRates api called')
+    getGraphData = async (days) => {
+      const response = await axios.get('/api/rates/Last'+days)
       const data = await response.data
-      //this.setState({ratesData: data})
-      // this.state.ratesData.forEach(element => {
-      //   console.log(element)
-      // });
+      console.log(data)
+      var datasets = []
+      var labels = []
+      var count = data[0].rate.length-1
+      data[0].rate.forEach(element => {
+          labels.push(this.createDate(new Date(),-count))
+          count-=1
+      });
+      this.setState({labels: labels})
+      data.forEach(element => {
+          var color=this.randomCssRgba()
+          console.log(color)
+        datasets.push({
+            label: element._id,
+            fill: false,
+            lineTension: 0.5,
+            borderColor: color,
+            data: element.rate
+        })
+      }); 
+      console.log(datasets)
+      this.setState({datasets: datasets})
     };
       
     render(){
       return(
-          <div>
-              <p>page under construction</p>
-          </div>
+        <div className="graphDiv2">
+        <Line
+         data={this.state}
+         options={{
+           title:{
+             display:true,
+             text:'Rates per Region',
+             fontSize:20
+           },
+           legend:{
+             display:true,
+             position:'bottom'
+           }
+         }}
+       />
+     </div>       
       );
 }
 }

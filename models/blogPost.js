@@ -11,7 +11,8 @@ const BlogPostSchema =  new Schema({
     contact: String,
     city: String,
     tag: String,
-    date:{
+    date: String,
+    timeStamp:{
         type: Date,
         default: Date.now()
     }

@@ -1,6 +1,6 @@
 import  axios from 'axios';
 import React from 'react';
-import { Alert, Card, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './styles.css';
 
 class sell extends React.Component{
@@ -10,6 +10,14 @@ class sell extends React.Component{
         Alertvisible: false 
         };
     }
+
+    createDate = (today,offset) => {
+        today = new Date(today.setDate(today.getDate()+offset));
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        return today = dd + '-' + mm + '-' + yyyy;
+    };
 
     resetForm = () => { 
         document.getElementById("sellForm").reset();
@@ -25,7 +33,9 @@ class sell extends React.Component{
             contact: this.contact.value,
             city: this.city.value,
             region: this.region.value,
-            tag: 'sell'   
+            tag: 'sell',
+            date: this.createDate(new Date(),0),
+            timeStamp: Date.now()
           };
         console.log(payload);
         axios({
