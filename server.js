@@ -5,7 +5,10 @@ const morgan = require('morgan');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 8080;  //step1 heroku deployment
+//const PORT = process.env.PORT || 8080;  //step1 heroku deployment
+
+app.set('port', process.env.PORT || 5000);
+console.log("+++++++++++++++" + app.get('port'));
 
 // Import routes
 const routes = require('./routes/api');
@@ -46,6 +49,8 @@ app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 
-app.listen(PORT, console.log(`Server is starting at ${PORT}`));
-
+//app.listen(PORT, console.log(`Server is starting at ${PORT}`));
+app.listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + app.get('port'));
+});
 //step 4 heroku deployment --> goto package.json and write build, install-client and heroku-postbuildcd scripts
