@@ -45,9 +45,10 @@ app.use('/api',routes);
 app.use(express.static('client/build'));
 
 // Handle React routing, return all requests to React app
-app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build",     
+    "index.html"));
+ });
 
 //app.listen(PORT, console.log(`Server is starting at ${PORT}`));
 app.listen(app.get('port'), function () {
